@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useGetQuestionsQuery } from "../api/api";
 import { Question } from "../Question/Question";
 import { Tab, Tabs, TabList, TabPanel } from 'react-tabs';
@@ -12,19 +12,35 @@ interface TestViewInterface {
 const TabsData = [
     "Конституция Республики Казахстан",
     "Закон РК \"О государственной службе Республики Казахстан\"",
+    "Закон РК «О гос. Секретах»",
+    "Закон РК «О правоохранительной службе»",
+    "Закон РК «О противодействии коррупции»",
+    "Закон РК «Об ОРД»",
+    `Этический кодекс государственных служащих 
+    (Правил служебной этики государственных служащих)
+    `
 ]
 
-const dataLength = 19
+const dataLength = 70
 
 
 export const TestView = ({ variant }: TestViewInterface) => {
-    const { data } = useGetQuestionsQuery(variant);
+    const { data, isLoading, } = useGetQuestionsQuery(variant);
     const [tabIndex, setTabIndex] = useState(0);
-    const [checkboxes, setCheckboxes] = useState(Array(dataLength).fill(Array(4).fill(false))); // количество вопросов
+    const [checkboxes, setCheckboxes] = useState(() => {
+        if (!isLoading) {
+            console.log(1);
+            return Array(data?.length).fill(Array(4).fill(false));
+        }
+        else {
+            console.log(2);
+            return Array(dataLength).fill(Array(4).fill(false))
+        }
+    }); // количество вопросов
     const [checkAnswers, setCheckanswers] = useState(false);
     let count = -1;
     let counter = -1
-
+    console.log(checkboxes);
     // const handleAnswers = (wrong: string, correct: String, index: number) => {
     //     if (checkAnswers) {
 
@@ -33,7 +49,6 @@ export const TestView = ({ variant }: TestViewInterface) => {
     //         return '';
     //     }
     // };
-
 
     return (
         <>
